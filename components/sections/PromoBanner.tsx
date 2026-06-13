@@ -1,0 +1,6 @@
+import Container from "@/components/layout/Container";
+import WAButton from "@/components/ui/WAButton";
+import FadeUp from "@/components/animations/FadeUp";
+interface PromoBannerProps { waLink: string; }
+const promos = ["Diskon 20% Order Pertama", "Promo Mahasiswa Khusus dengan KTM", "Gratis Antar-Jemput min 10kg", "Langganan bulanan hemat 15%"];
+export default function PromoBanner({ waLink }: PromoBannerProps) { return <section className="bg-primary py-16 text-white md:py-24"><Container><FadeUp><div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between"><div><p className="font-jakarta text-label font-bold uppercase tracking-[0.08em] text-white/70">Promo Aktif</p><h2 className="mt-4 font-jakarta text-h2 font-semibold">Penawaran Spesial Bulan Ini</h2><p className="mt-4 max-w-[65ch] text-bodylg text-white/80">Slot antar-jemput harian terbatas untuk layanan Same Day/Express. Klaim promo sebelum jadwal kurir penuh.</p></div><WAButton href={waLink} variant="light">Klaim Promo via WA</WAButton></div><div className="mt-10 grid gap-3 md:grid-cols-4">{promos.map((p) => <div key={p} className="rounded-3xl bg-white/10 p-5 font-jakarta text-sm font-bold backdrop-blur">{p}</div>)}</div>{/* NOTE: PRD belum mengonfirmasi apakah promo berlaku akumulatif atau dipilih salah satu. */}</FadeUp></Container></section>; }
