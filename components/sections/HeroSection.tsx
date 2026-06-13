@@ -17,8 +17,9 @@ export default function HeroSection({ waLink }: HeroSectionProps) {
   return (
     <section ref={ref} className="hero-min relative overflow-hidden bg-bg pt-36 pb-16 md:pt-48 md:pb-24 lg:pt-20 lg:pb-10">
       <div className="absolute inset-0 z-0 block lg:hidden">
-        <Image src="/images/hero-mobile.webp" alt="Hero Mobile Background" fill priority className="object-cover object-top opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-white/80 to-white/40" />
+        <Image src="/images/hero-mobile.webp" alt="Hero Mobile Background" fill priority className="object-cover object-top" />
+        <div className="absolute inset-0 bg-white/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/80 to-transparent" />
       </div>
       <div className="hidden lg:block">
         <MeshGradient />
