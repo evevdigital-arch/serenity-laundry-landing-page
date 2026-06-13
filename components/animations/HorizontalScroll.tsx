@@ -1,11 +1,59 @@
 "use client";
-import { ReactNode, useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
-import { useIsMobile } from "@/hooks/useIsMobile";
+
+import type { ReactNode } from "react";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-interface HorizontalScrollProps { children: ReactNode; className?: string; }
+
+interface HorizontalScrollProps {
+  children: ReactNode;
+  className?: string;
+}
+
 export default function HorizontalScroll({ children, className = "" }: HorizontalScrollProps) {
-  const ref = useRef<HTMLDivElement>(null); const track = useRef<HTMLDivElement>(null); const mobile = useIsMobile(); const reduced = useReducedMotion();
-  useGSAP(() => { if (mobile || reduced || !ref.current || !track.current) return; const amount = track.current.scrollWidth - ref.current.offsetWidth; if (amount <= 0) return; gsap.to(track.current, { x: -amount, ease: "none", scrollTrigger: { trigger: ref.current, start: "top top", end: () => `+=${amount}`, pin: true, scrub: true } }); }, { scope: ref, dependencies: [mobile, reduced] });
-  return <section ref={ref} className={`overflow-hidden ${className}`}><div ref={track} className="flex gap-5 overflow-x-auto md:overflow-visible no-scrollbar">{children}</div></section>;
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+
+  useGSAP(
+    () => {
+      if (reduceMotion || !sectionRef.current || !trackRef.current) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
+        // use sectionRef.offsetWidth so it works perfectly inside a constrained Container
+        const distance = trackRef.current!.scrollWidth - sectionRef.current!.offsetWidth;
+        if (distance <= 0) return;
+
+        gsap.to(trackRef.current, {
+          x: -distance,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: () => `+=${distance}`,
+            pin: true,
+            scrub: true,
+            invalidateOnRefresh: true
+          }
+        });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef, dependencies: [reduceMotion] }
+  );
+
+  return (
+    <div ref={sectionRef} className={`overflow-hidden ${className}`}>
+      <div
+        ref={trackRef}
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 md:w-max md:gap-8 md:overflow-visible md:will-change-transform no-scrollbar"
+      >
+        {children}
+      </div>
+    </div>
+  );
 }
